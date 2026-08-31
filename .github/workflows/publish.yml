@@ -24,5 +24,6 @@ jobs:
 
       - name: Build and push
         run: |
-          docker build . --tag ghcr.io/deselikem/hello-docker-gcr-demo:staging
-          docker push ghcr.io/deselikem/hello-docker-gcr-demo:staging
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker build . --tag ghcr.io/$OWNER/hello-docker-gcr-demo:staging
+          docker push ghcr.io/$OWNER/hello-docker-gcr-demo:staging
