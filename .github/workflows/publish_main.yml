@@ -1,0 +1,29 @@
+name: publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  publish-staging-image:
+    name: Build staging image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker build . --tag ghcr.io/$OWNER/hello-docker-gcr-demo:production
+          docker push ghcr.io/$OWNER/hello-docker-gcr-demo:production
